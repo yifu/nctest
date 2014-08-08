@@ -55,10 +55,10 @@ void print_cur_dir()
         perror("scandir:");
         exit(EXIT_FAILURE);
     }
-    while(n--)
+    for(size_t i = 0; i < n; ++i)
     {
-        assert(printw("%s\n", namelist[n]->d_name) == OK);
-        free(namelist[n]);
+        assert(printw("%s\n", namelist[i]->d_name) == OK);
+        free(namelist[i]);
     }
     free(namelist);
 }
