@@ -19,13 +19,11 @@ void quit_handler(int sig) { quit = true; }
 
 int main()
 {
-    int i = 0;
     set_quit_handler();
     init_ncurses();
     while(not quit)
     {
         erase();
-        printw("%d\n", i++);
         print_cur_dir();
         int ch = getch();
         if(ch == ERR)
