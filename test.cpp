@@ -12,7 +12,7 @@ using namespace std;
 bool quit = false;
 void quit_handler(int sig) { quit = true; }
 
-size_t hl_line_idx = 3, max_lines;
+size_t hl_line_idx = 0, max_lines = 0;
 
 void init_ncurses()
 {
