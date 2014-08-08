@@ -4,12 +4,13 @@
 #include <assert.h>
 #include <signal.h>
 #include <dirent.h>
+#include <errno.h>
+#include <string.h>
 
 using namespace std;
 
 bool quit = false;
 void quit_handler(int sig) { quit = true; }
-void endwin_funcall() { endwin(); }
 
 size_t hl_line_idx = 3, max_lines;
 
@@ -32,7 +33,6 @@ void init_ncurses()
         init_pair(6, COLOR_MAGENTA, COLOR_BLACK);
         init_pair(7, COLOR_WHITE,   COLOR_BLACK);
     }
-    atexit(endwin_funcall);
 }
 
 void set_quit_handler()
@@ -43,7 +43,9 @@ void set_quit_handler()
     action.sa_flags = 0;
     if (sigaction(SIGINT, &action, NULL/*old action*/) == -1)
     {
-        perror("sigaction:");
+        int errnum = errno;
+        endwin();
+        printf("%s\n", strerror(errnum));
         exit(EXIT_FAILURE);
     }
 }
@@ -54,7 +56,9 @@ void print_cur_dir()
     max_lines = scandir("./", &namelist, NULL /*filter*/, alphasort);
     if(max_lines == -1)
     {
-        perror("scandir:");
+        int errnum = errno;
+        endwin();
+        printf("%s\n", strerror(errnum));
         exit(EXIT_FAILURE);
     }
     for(size_t i = 0; i < max_lines; ++i)
@@ -101,6 +105,8 @@ int main()
         }
         refresh();
     }
+    endwin();
+    exit(EXIT_SUCCESS);
 }
 
 // g++ test.cpp -o test -lncurses
