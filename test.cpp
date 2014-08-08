@@ -18,7 +18,7 @@ void init_ncurses()
     nonl();
     cbreak();
     halfdelay(1);
-    echo();
+    noecho();
     if(has_colors())
     {
         start_color();
