@@ -10,9 +10,12 @@
 using namespace std;
 
 bool quit = false;
-void quit_handler(int sig) { quit = true; }
-
 size_t hl_line_idx = 0, max_lines = 0;
+
+void init_ncurses();
+void set_quit_handler();
+void print_cur_dir();
+void quit_handler(int sig) { quit = true; }
 
 void init_ncurses()
 {
