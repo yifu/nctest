@@ -17,6 +17,7 @@ void init_ncurses()
     keypad(stdscr, TRUE);
     nonl();
     cbreak();
+    halfdelay(1);
     echo();
     if(has_colors())
     {
@@ -72,8 +73,16 @@ int main()
         erase();
         printw("%d\n", i++);
         print_cur_dir();
+        int ch = getch();
+        if(ch == ERR)
+        {
+            printw("NO INPUT\n");
+        }
+        else if(ch == KEY_LEFT)
+        {
+            printw("LEFT\n");
+        }
         refresh();
-        sleep(1);
     }
 }
 
