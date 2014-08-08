@@ -14,6 +14,7 @@ using namespace std;
 
 bool quit = false;
 size_t hl_line_idx = 0, max_lines = 0;
+struct dirent **namelist = 0;
 
 void init_ncurses();
 void set_quit_handler();
@@ -64,7 +65,6 @@ void init_ncurses()
 
 void print_cur_dir()
 {
-    struct dirent **namelist;
     char *cwd = get_current_dir_name();
     max_lines = scandir(cwd, &namelist, NULL /*filter*/, alphasort);
     if(max_lines == -1)
