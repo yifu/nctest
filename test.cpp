@@ -19,6 +19,8 @@ struct dirent **namelist = 0;
 int keys[100] = {0};
 size_t keys_sz = 0;
 
+char debug[200] = "";
+
 void init_ncurses();
 void set_quit_handler();
 void update_cur_dir_info();
@@ -66,6 +68,7 @@ void init_ncurses()
     {
         start_color();
         init_pair(1, COLOR_WHITE, COLOR_BLUE);
+        init_pair(2, COLOR_RED, COLOR_BLACK);
     }
 }
 
@@ -98,6 +101,12 @@ void print_cur_dir()
     // for(size_t i = 0; i < keys_sz; ++i)
     // 	printw("[%02x]", keys[i]);
     // printw("Move cwd to %s.\n", path);
+
+    // TODO it would be great to print that in front of the entry
+    // instead of the end of the list.
+    attron(A_BOLD | COLOR_PAIR(2));
+    printw("%s\n", debug);
+    attroff(A_BOLD | COLOR_PAIR(2));
 }
 
 void update_hl_line_pos()
@@ -121,7 +130,13 @@ void update_hl_line_pos()
 	    char path[PATH_MAX] = "";
 	    strcat(path, "./");
 	    strcat(path, namelist[hl_line_idx]->d_name);
-	    assert(chdir(path) != -1);
+	    if(chdir(path) == -1)
+	    {
+		if(errno == ENOENT)
+		    strcpy(debug, "Not an entry.");
+		else if(errno == ENOTDIR)
+		    strcpy(debug, "Not a dir.");
+	    }
 	    update_cur_dir_info();
 	    hl_line_idx = 0;
 	}
