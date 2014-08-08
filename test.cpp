@@ -25,13 +25,7 @@ void init_ncurses()
     if(has_colors())
     {
         start_color();
-        init_pair(1, COLOR_RED,     COLOR_BLACK);
-        init_pair(2, COLOR_GREEN,   COLOR_BLACK);
-        init_pair(3, COLOR_YELLOW,  COLOR_BLACK);
-        init_pair(4, COLOR_BLUE,    COLOR_BLACK);
-        init_pair(5, COLOR_CYAN,    COLOR_BLACK);
-        init_pair(6, COLOR_MAGENTA, COLOR_BLACK);
-        init_pair(7, COLOR_WHITE,   COLOR_BLACK);
+        init_pair(1, COLOR_WHITE, COLOR_BLUE);
     }
 }
 
@@ -65,9 +59,9 @@ void print_cur_dir()
     {
         if(i == hl_line_idx)
         {
-            attron(A_UNDERLINE | COLOR_PAIR(4));
+            attron(COLOR_PAIR(1));
             printw("%s\n", namelist[i]->d_name);
-            attroff(A_UNDERLINE | COLOR_PAIR(4));
+            attroff(COLOR_PAIR(1));
         }
         else
         {
