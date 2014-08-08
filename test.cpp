@@ -57,7 +57,7 @@ void print_cur_dir()
     }
     for(size_t i = 0; i < n; ++i)
     {
-        assert(printw("%s\n", namelist[i]->d_name) == OK);
+        printw("%s\n", namelist[i]->d_name);
         free(namelist[i]);
     }
     free(namelist);
