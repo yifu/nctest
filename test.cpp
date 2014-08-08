@@ -17,64 +17,6 @@ void set_quit_handler();
 void print_cur_dir();
 void quit_handler(int sig) { quit = true; }
 
-void init_ncurses()
-{
-    initscr();
-    keypad(stdscr, TRUE);
-    nonl();
-    cbreak();
-    halfdelay(1/*10ms*/);
-    noecho();
-    if(has_colors())
-    {
-        start_color();
-        init_pair(1, COLOR_WHITE, COLOR_BLUE);
-    }
-}
-
-void set_quit_handler()
-{
-    struct sigaction action;
-    action.sa_handler = quit_handler;
-    sigemptyset (&action.sa_mask);
-    action.sa_flags = 0;
-    if (sigaction(SIGINT, &action, NULL/*old action*/) == -1)
-    {
-        int errnum = errno;
-        endwin();
-        printf("%s\n", strerror(errnum));
-        exit(EXIT_FAILURE);
-    }
-}
-
-void print_cur_dir()
-{
-    struct dirent **namelist;
-    max_lines = scandir("./", &namelist, NULL /*filter*/, alphasort);
-    if(max_lines == -1)
-    {
-        int errnum = errno;
-        endwin();
-        printf("%s\n", strerror(errnum));
-        exit(EXIT_FAILURE);
-    }
-    for(size_t i = 0; i < max_lines; ++i)
-    {
-        if(i == hl_line_idx)
-        {
-            attron(COLOR_PAIR(1));
-            printw("%s\n", namelist[i]->d_name);
-            attroff(COLOR_PAIR(1));
-        }
-        else
-        {
-            printw("%s\n", namelist[i]->d_name);
-        }
-        free(namelist[i]);
-    }
-    free(namelist);
-}
-
 int main()
 {
     int i = 0;
@@ -104,6 +46,64 @@ int main()
     }
     endwin();
     exit(EXIT_SUCCESS);
+}
+
+void set_quit_handler()
+{
+    struct sigaction action;
+    action.sa_handler = quit_handler;
+    sigemptyset (&action.sa_mask);
+    action.sa_flags = 0;
+    if (sigaction(SIGINT, &action, NULL/*old action*/) == -1)
+    {
+        int errnum = errno;
+        endwin();
+        printf("%s\n", strerror(errnum));
+        exit(EXIT_FAILURE);
+    }
+}
+
+void init_ncurses()
+{
+    initscr();
+    keypad(stdscr, TRUE);
+    nonl();
+    cbreak();
+    halfdelay(1/*10ms*/);
+    noecho();
+    if(has_colors())
+    {
+        start_color();
+        init_pair(1, COLOR_WHITE, COLOR_BLUE);
+    }
+}
+
+void print_cur_dir()
+{
+    struct dirent **namelist;
+    max_lines = scandir("./", &namelist, NULL /*filter*/, alphasort);
+    if(max_lines == -1)
+    {
+        int errnum = errno;
+        endwin();
+        printf("%s\n", strerror(errnum));
+        exit(EXIT_FAILURE);
+    }
+    for(size_t i = 0; i < max_lines; ++i)
+    {
+        if(i == hl_line_idx)
+        {
+            attron(COLOR_PAIR(1));
+            printw("%s\n", namelist[i]->d_name);
+            attroff(COLOR_PAIR(1));
+        }
+        else
+        {
+            printw("%s\n", namelist[i]->d_name);
+        }
+        free(namelist[i]);
+    }
+    free(namelist);
 }
 
 // g++ test.cpp -o test -lncurses
