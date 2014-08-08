@@ -8,7 +8,7 @@
 #include <string.h>
 #include <unistd.h>
 
-// g++ test.cpp -o test -lncurses
+// g++ -O1 -ggdb test.cpp -o test -lncurses
 
 using namespace std;
 
