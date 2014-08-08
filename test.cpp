@@ -11,6 +11,8 @@ bool quit = false;
 void quit_handler(int sig) { quit = true; }
 void endwin_funcall() { endwin(); }
 
+size_t hl_line_idx = 3, max_lines;
+
 void init_ncurses()
 {
     initscr();
@@ -49,15 +51,19 @@ void set_quit_handler()
 void print_cur_dir()
 {
     struct dirent **namelist;
-    int n = scandir("./", &namelist, NULL /*filter*/, alphasort);
-    if(n == -1)
+    max_lines = scandir("./", &namelist, NULL /*filter*/, alphasort);
+    if(max_lines == -1)
     {
         perror("scandir:");
         exit(EXIT_FAILURE);
     }
-    for(size_t i = 0; i < n; ++i)
+    for(size_t i = 0; i < max_lines; ++i)
     {
+        if(i == hl_line_idx)
+            attron(A_UNDERLINE | COLOR_PAIR(4));
         printw("%s\n", namelist[i]->d_name);
+        if(i == hl_line_idx)
+            attroff(A_UNDERLINE | COLOR_PAIR(4));
         free(namelist[i]);
     }
     free(namelist);
@@ -77,6 +83,16 @@ int main()
         if(ch == ERR)
         {
             printw("NO INPUT\n");
+        }
+        else if(ch == KEY_UP)
+        {
+            if(hl_line_idx > 0)
+                --hl_line_idx;
+        }
+        else if(ch == KEY_DOWN)
+        {
+            if(hl_line_idx < max_lines-1)
+                ++hl_line_idx;
         }
         else if(ch == KEY_LEFT)
         {
