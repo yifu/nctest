@@ -52,7 +52,7 @@ void init_ncurses()
     keypad(stdscr, TRUE);
     nonl();
     cbreak();
-    halfdelay(1/*10ms*/);
+    halfdelay(10/*100ms*/);
     noecho();
     if(has_colors())
     {
