@@ -16,8 +16,12 @@ bool quit = false;
 size_t hl_line_idx = 0, max_lines = 0;
 struct dirent **namelist = 0;
 
+int keys[100] = {0};
+size_t keys_sz = 0;
+
 void init_ncurses();
 void set_quit_handler();
+void update_cur_dir_info();
 void print_cur_dir();
 void update_hl_line_pos();
 void quit_handler(int sig) { quit = true; }
@@ -31,6 +35,7 @@ int main()
     while(not quit)
     {
         erase();
+	update_cur_dir_info();
         print_cur_dir();
         update_hl_line_pos();
         refresh();
@@ -64,13 +69,19 @@ void init_ncurses()
     }
 }
 
-void print_cur_dir()
+void update_cur_dir_info()
 {
+    free_name_list();
     char *cwd = get_current_dir_name();
     printw("%s\n", cwd);
     max_lines = scandir(cwd, &namelist, NULL /*filter*/, alphasort);
     if(max_lines == -1)
         stop(errno);
+    free(cwd);
+}
+
+void print_cur_dir()
+{
     for(size_t i = 0; i < max_lines; ++i)
     {
         if(i == hl_line_idx)
@@ -84,8 +95,9 @@ void print_cur_dir()
             printw("%s\n", namelist[i]->d_name);
         }
     }
-    free(cwd);
-    free_name_list();
+    // for(size_t i = 0; i < keys_sz; ++i)
+    // 	printw("[%02x]", keys[i]);
+    // printw("Move cwd to %s.\n", path);
 }
 
 void update_hl_line_pos()
@@ -100,6 +112,23 @@ void update_hl_line_pos()
     {
         if(hl_line_idx < max_lines-1)
             ++hl_line_idx;
+    }
+    else if(ch == '\r')
+    {
+	if(max_lines > 0)
+	{
+	    assert(namelist[hl_line_idx]->d_name);
+	    char path[PATH_MAX] = "";
+	    strcat(path, "./");
+	    strcat(path, namelist[hl_line_idx]->d_name);
+	    assert(chdir(path) != -1);
+	    update_cur_dir_info();
+	    hl_line_idx = 0;
+	}
+    }
+    else if(ch != ERR)
+    {
+	keys[keys_sz++] = ch;
     }
 }
 
