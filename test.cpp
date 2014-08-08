@@ -20,7 +20,7 @@ void init_ncurses()
     keypad(stdscr, TRUE);
     nonl();
     cbreak();
-    halfdelay(1);
+    halfdelay(1/*10ms*/);
     noecho();
     if(has_colors())
     {
