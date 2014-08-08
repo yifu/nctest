@@ -96,11 +96,7 @@ void print_cur_dir()
 void update_hl_line_pos()
 {
     int ch = getch();
-    if(ch == ERR)
-    {
-        printw("NO INPUT\n");
-    }
-    else if(ch == KEY_UP)
+    if(ch == KEY_UP)
     {
         if(hl_line_idx > 0)
             --hl_line_idx;
