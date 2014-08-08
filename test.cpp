@@ -94,10 +94,6 @@ int main()
             if(hl_line_idx < max_lines-1)
                 ++hl_line_idx;
         }
-        else if(ch == KEY_LEFT)
-        {
-            printw("LEFT\n");
-        }
         refresh();
     }
 }
