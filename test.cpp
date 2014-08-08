@@ -19,6 +19,7 @@ void set_quit_handler();
 void print_cur_dir();
 void update_hl_line_pos();
 void quit_handler(int sig) { quit = true; }
+void stop(int errnum);
 
 int main()
 {
@@ -42,12 +43,7 @@ void set_quit_handler()
     sigemptyset (&action.sa_mask);
     action.sa_flags = 0;
     if (sigaction(SIGINT, &action, NULL/*old action*/) == -1)
-    {
-        int errnum = errno;
-        endwin();
-        printf("%s\n", strerror(errnum));
-        exit(EXIT_FAILURE);
-    }
+        stop(errno);
 }
 
 void init_ncurses()
@@ -70,12 +66,7 @@ void print_cur_dir()
     struct dirent **namelist;
     max_lines = scandir("./", &namelist, NULL /*filter*/, alphasort);
     if(max_lines == -1)
-    {
-        int errnum = errno;
-        endwin();
-        printf("%s\n", strerror(errnum));
-        exit(EXIT_FAILURE);
-    }
+        stop(errno);
     for(size_t i = 0; i < max_lines; ++i)
     {
         if(i == hl_line_idx)
@@ -106,4 +97,11 @@ void update_hl_line_pos()
         if(hl_line_idx < max_lines-1)
             ++hl_line_idx;
     }
+}
+
+void stop(int errnum)
+{
+    endwin();
+    printf("%s\n", strerror(errnum));
+    exit(EXIT_FAILURE);
 }
