@@ -67,6 +67,7 @@ void init_ncurses()
 void print_cur_dir()
 {
     char *cwd = get_current_dir_name();
+    printw("%s\n", cwd);
     max_lines = scandir(cwd, &namelist, NULL /*filter*/, alphasort);
     if(max_lines == -1)
         stop(errno);
