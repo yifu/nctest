@@ -6,6 +6,7 @@
 #include <dirent.h>
 #include <errno.h>
 #include <string.h>
+#include <unistd.h>
 
 // g++ test.cpp -o test -lncurses
 
@@ -64,7 +65,8 @@ void init_ncurses()
 void print_cur_dir()
 {
     struct dirent **namelist;
-    max_lines = scandir("./", &namelist, NULL /*filter*/, alphasort);
+    char *cwd = get_current_dir_name();
+    max_lines = scandir(cwd, &namelist, NULL /*filter*/, alphasort);
     if(max_lines == -1)
         stop(errno);
     for(size_t i = 0; i < max_lines; ++i)
@@ -81,6 +83,7 @@ void print_cur_dir()
         }
         free(namelist[i]);
     }
+    free(cwd);
     free(namelist);
 }
 
