@@ -13,7 +13,14 @@
 using namespace std;
 
 bool quit = false;
-size_t hl_line_idx = 0, max_lines = 0;
+size_t hl_line_idx = 0; // TODO Item list may change shortly in time
+			// (for instance emacs introduces backup files
+			// beginning and finishing with # char). As a
+			// result the highlighted lines doe not move
+			// while it must highlight the same entry
+			// name. We must not use an index here, but a
+			// pointer to an entry.
+size_t max_lines = 0;
 struct dirent **namelist = 0;
 
 int keys[100] = {0};
@@ -85,6 +92,9 @@ void update_cur_dir_info()
 
 void print_cur_dir()
 {
+    // TODO Understand why when there are more items than the number
+    // of line on the screen, then the last line collapse all the last
+    // items.
     for(size_t i = 0; i < max_lines; ++i)
     {
         if(i == hl_line_idx)
