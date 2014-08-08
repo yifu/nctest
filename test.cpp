@@ -15,6 +15,7 @@ size_t hl_line_idx = 0, max_lines = 0;
 void init_ncurses();
 void set_quit_handler();
 void print_cur_dir();
+void update_hl_line_pos();
 void quit_handler(int sig) { quit = true; }
 
 int main()
@@ -25,21 +26,7 @@ int main()
     {
         erase();
         print_cur_dir();
-        int ch = getch();
-        if(ch == ERR)
-        {
-            printw("NO INPUT\n");
-        }
-        else if(ch == KEY_UP)
-        {
-            if(hl_line_idx > 0)
-                --hl_line_idx;
-        }
-        else if(ch == KEY_DOWN)
-        {
-            if(hl_line_idx < max_lines-1)
-                ++hl_line_idx;
-        }
+        update_hl_line_pos();
         refresh();
     }
     endwin();
@@ -103,5 +90,25 @@ void print_cur_dir()
     }
     free(namelist);
 }
+
+void update_hl_line_pos()
+{
+    int ch = getch();
+    if(ch == ERR)
+    {
+        printw("NO INPUT\n");
+    }
+    else if(ch == KEY_UP)
+    {
+        if(hl_line_idx > 0)
+            --hl_line_idx;
+    }
+    else if(ch == KEY_DOWN)
+    {
+        if(hl_line_idx < max_lines-1)
+            ++hl_line_idx;
+    }
+}
+
 
 // g++ test.cpp -o test -lncurses
