@@ -7,6 +7,8 @@
 #include <errno.h>
 #include <string.h>
 
+// g++ test.cpp -o test -lncurses
+
 using namespace std;
 
 bool quit = false;
@@ -109,6 +111,3 @@ void update_hl_line_pos()
             ++hl_line_idx;
     }
 }
-
-
-// g++ test.cpp -o test -lncurses
