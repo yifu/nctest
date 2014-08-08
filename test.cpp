@@ -22,6 +22,7 @@ void print_cur_dir();
 void update_hl_line_pos();
 void quit_handler(int sig) { quit = true; }
 void stop(int errnum);
+void free_name_list();
 
 int main()
 {
@@ -81,10 +82,9 @@ void print_cur_dir()
         {
             printw("%s\n", namelist[i]->d_name);
         }
-        free(namelist[i]);
     }
     free(cwd);
-    free(namelist);
+    free_name_list();
 }
 
 void update_hl_line_pos()
@@ -107,4 +107,11 @@ void stop(int errnum)
     endwin();
     printf("%s\n", strerror(errnum));
     exit(EXIT_FAILURE);
+}
+
+void free_name_list()
+{
+    for(size_t i = 0; i < max_lines; ++i)
+        free(namelist[i]);
+    free(namelist);
 }
