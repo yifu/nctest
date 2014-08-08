@@ -60,10 +60,15 @@ void print_cur_dir()
     for(size_t i = 0; i < max_lines; ++i)
     {
         if(i == hl_line_idx)
+        {
             attron(A_UNDERLINE | COLOR_PAIR(4));
-        printw("%s\n", namelist[i]->d_name);
-        if(i == hl_line_idx)
+            printw("%s\n", namelist[i]->d_name);
             attroff(A_UNDERLINE | COLOR_PAIR(4));
+        }
+        else
+        {
+            printw("%s\n", namelist[i]->d_name);
+        }
         free(namelist[i]);
     }
     free(namelist);
